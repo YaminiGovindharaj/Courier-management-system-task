@@ -1,0 +1,1749 @@
+﻿Courier Management System 
+        
+Tasks 1 to 8:
+
+
+-----these are the folders and classes created for courier                  managementsystem—-------
+
+
+1.Entities Folder:
+1. Courier.cs
+2. CourierCompany.cs
+3. CourierCompanyCollection.cs
+4. Employee.cs
+5. Location.cs
+6. Payment.cs
+7. User.cs
+
+
+2.Exceptions-task7 folder:
+    a.ExceptionHandler.cs
+    b.InvalidEmployeeIdException.cs
+    c. TrackingNumberNotfoundException.cs
+
+
+3. Services folder
+  a.CourierAdminServices.cs
+  b.CourierAdminServiceCollectionImpl.cs
+  c.CourierAdminServiceImp.cs
+  d.CourierUserService.cs
+  e.CourierUserServiceCollectionImpltask8.cs
+  f.courieruserserviceimpltask8.cs
+ g.IcourierAdminService.cs
+ h.IcourierUserService.cs
+
+
+
+
+4.task(one-four)-folder
+I.task1-controlflow
+1. CourierAssignment.cs
+2. OrderStatusChecker.cs
+3. ParcelWeightCategorize.cs
+4. UserAuthentication.cs
+Ii,task2-loops folder
+    a.OrderDisplayLoops.cs
+    b.RealTimeforTracking.cs
+Iii.task3-all about arrays and ds
+1. NearestCourierFinder.cs
+2. ParcelTrackingHistory.cs
+iv.Task4-here all about strings and Functions
+1. AddressFormatting.cs
+2. CustomerValidation.cs
+3. FindSimilarAddress.cs
+4. OrderConfirmation.cs
+5. ParcelTrackingSimulation.cs
+6. PasswordGenerator.cs
+7. ShippingCostCalculator.cs
+
+
+5.Main program.cs
+
+
+—-----------------------------------------------------------------------------------------------------------------------
+—-code–
+
+
+1.Entity:
+   
+1. Courier.cs
+    
+  using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Entities;
+
+
+
+
+namespace CourierManangementSystem_day10task_hexa.Entities
+{
+    public class Courier
+    {
+        //id,sendername, receiver name, both address, weight, trackingno, shipmentdate,status,employeeid
+            public int CourierId { get; set; }
+            public string SenderName { get; set; }
+            public string SenderAddress { get; set; }
+            public string ReceiverName { get; set; }
+            public string ReceiverAddress { get; set; }
+            public double Weight { get; set; }
+            public string TrackingNumber { get; set; }
+            public DateTime ShipmentDate { get; set; }
+            public int Status { get; set; }
+          
+            public int AssignedEmployeeID { get; set; }
+
+
+             public Courier() { }
+
+
+            public Courier(int courierId, string senderName, string senderAddress,
+                string receiverName, string receiverAddress, double weight,
+                string trackingNumber, DateTime shipmentDate, int status)
+            {
+                CourierId = courierId;
+                SenderName = senderName;
+                SenderAddress = senderAddress;
+                ReceiverName = receiverName;
+                ReceiverAddress = receiverAddress;
+                Weight = weight;
+                TrackingNumber = trackingNumber;
+                ShipmentDate = shipmentDate;
+               
+            }
+        public override string ToString()
+        {
+            return $"Tracking Number: {TrackingNumber}, Sender: {SenderName}, Receiver: {ReceiverName}";
+        }
+
+
+    }
+    }
+
+
+
+
+2. CourierCompany.cs
+
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Entities;
+
+
+
+
+namespace CourierManangementSystem_day10task_hexa.Entities
+{
+    public class CourierCompany
+    {
+        public int CompanyID { get; set; }
+        public string Name { get; set; }
+        public string Address { get; set; }
+        public string ContactNumber { get; set; }
+        public string Email { get; set; }
+
+
+      //collection task
+        public List<Employee> Employees { get; set; } = new List<Employee>();
+        public List<Courier> Couriers { get; set; } = new List<Courier>();
+
+
+        public CourierCompany() { }
+
+
+        public CourierCompany(int companyID, string name, string address, string contactNumber, string email)
+        {
+            CompanyID = companyID;
+            Name = name;
+            Address = address;
+            ContactNumber = contactNumber;
+            Email = email;
+        }
+
+
+        public void AddEmployee(Employee employee)
+        {
+            Employees.Add(employee);
+        }
+
+
+     
+        public bool RemoveEmployee(int employeeId)
+        {
+            var emp = Employees.Find(e => e.EmployeeID == employeeId);
+            if (emp != null)
+            {
+                Employees.Remove(emp);
+                return true;
+            }
+            return false;
+        }
+
+
+        public List<Employee> GetAllEmployees()
+        {
+            return Employees;
+        }
+
+
+        public override string ToString()
+        {
+            return $"Company ID: {CompanyID}, Name: {Name}, Address: {Address}, Contact: {ContactNumber}, Email: {Email}";
+        }
+
+
+
+
+
+
+        //for task 8 am updating 
+
+
+        public void AddCourier(Courier courier)
+        {
+            Couriers.Add(courier);
+        }
+
+
+        public Courier FindCourier(string trackingNumber)
+        {
+            return Couriers.Find(c => c.TrackingNumber == trackingNumber);
+        }
+
+
+        public bool RemoveCourier(string trackingNumber)
+        {
+            var courier = Couriers.Find(c => c.TrackingNumber == trackingNumber);
+            if (courier != null)
+            {
+                Couriers.Remove(courier);
+                return true;
+            }
+            return false;
+        }
+
+
+        public List<Courier> GetCouriersByStaff(int staffId)
+        {
+            return Couriers.FindAll(c => c.AssignedEmployeeID == staffId);
+        }
+    }
+}
+    
+
+
+c.CourierCompanyCollection.cs
+
+
+  using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using CourierManangementSystem_day10task_hexa.Entities;
+
+
+namespace CourierManangementSystem_day10task_hexa.Entities
+{
+   // for collection task
+        public class CourierCompanyCollection
+        {
+            public List<Courier> Couriers { get; set; } = new List<Courier>();
+            public List<Employee> Employees { get; set; } = new List<Employee>();
+        }
+    }
+   
+
+
+d.Employee.cs
+
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Entities;
+
+
+namespace CourierManangementSystem_day10task_hexa.Entities
+{ 
+        public class Employee
+        {
+            public int EmployeeID
+        { get; set; }
+            public string Name 
+        { get; set; }
+            public string Role 
+        { get; set; }
+            public string Email 
+        { get; set; }
+            public string ContactNumber
+        { get; set; }
+        public Employee() { }
+        public Employee(string name, string contactNumber)
+        {
+            Name = name;
+            ContactNumber = contactNumber;
+        }
+
+
+
+
+        public Employee(int employeeID, string name, string role, string email, string contactNumber)
+            {
+                EmployeeID = employeeID;
+                Name = name;
+                Role = role;
+                Email = email;
+                ContactNumber = contactNumber;
+            }
+
+
+            public override string ToString()
+            {
+                return $"Employee ID: {EmployeeID}, Name: {Name}, Role: {Role}, Email: {Email}, Contact: {ContactNumber}";
+            }
+        }
+    }
+
+
+
+
+e. Location.cs
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Entities;
+
+
+namespace CourierManangementSystem_day10task_hexa.Entities
+{
+    internal class Location
+    {
+            public int LocationID 
+        { get; set; }
+            public string City 
+        { get; set; }
+            public string State
+        { get; set; }
+            public string Country 
+        { get; set; }
+            public string ZipCode 
+        { get; set; }
+
+
+            public Location() 
+        { }
+
+
+            public Location(int locationID, string city, string state, string country, string zipCode)
+            {
+                LocationID = locationID;
+                City = city;
+                State = state;
+                Country = country;
+                ZipCode = zipCode;
+            }
+
+
+            public override string ToString()
+            {
+                return $"Location ID: {LocationID}, City: {City}, State: {State}, Country: {Country}, ZipCode: {ZipCode}";
+            }
+        }
+    }
+
+
+
+
+f.Payment.cs
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Entities;
+
+
+namespace CourierManangementSystem_day10task_hexa.Entities
+{
+    internal class Payment
+    {
+            public int PaymentID 
+        { get; set; }
+            public int UserID 
+        { get; set; }
+            public int CourierID 
+        { get; set; }
+            public double Amount 
+        { get; set; }
+            public string PaymentMethod 
+        { get; set; }
+            public string Status 
+        { get; set; }
+            public DateTime PaymentDate
+        { get; set; }
+
+
+            public Payment()
+        { }
+
+
+            public Payment(int paymentID, int userID, int courierID, double amount, string paymentMethod, string status, DateTime paymentDate)
+            {
+                PaymentID = paymentID;
+                UserID = userID;
+                CourierID = courierID;
+                Amount = amount;
+                PaymentMethod = paymentMethod;
+                Status = status;
+                PaymentDate = paymentDate;
+            }
+
+
+            public override string ToString()
+            {
+                return $"Payment ID: {PaymentID}, User ID: {UserID}, Courier ID: {CourierID}, Amount: ${Amount}, Method: {PaymentMethod}, Status: {Status}, Date: {PaymentDate}";
+            }
+        }
+    }
+
+
+g.User.cs
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Entities;
+
+
+namespace CourierManangementSystem_day10task_hexa.Entities
+{
+    internal class User
+    {
+            public int UserID 
+        { get; set; }
+            public string UserName 
+        { get; set; }
+            public string Email 
+        { get; set; }
+            public string Password 
+        { get; set; }
+            public string ContactNumber
+        { get; set; }
+            public string Address { 
+            get; set; 
+        }
+
+
+            public User()
+         { }
+
+
+            public User(int userID, string userName, string email, string password, string contactNumber, string address)
+            {
+                UserID = userID;
+                UserName = userName;
+                Email = email;
+                Password = password;
+                ContactNumber = contactNumber;
+                Address = address;
+            }
+
+
+            public override string ToString()
+            {
+                return $"User ID: {UserID}, Name: {UserName}, Email: {Email}, Contact: {ContactNumber}, Address: {Address}";
+            }
+        }
+    }
+
+
+
+
+—------------------------------------------------------------------------------------------------------------------------
+
+
+2.Exception task- folder
+
+
+1. ExceptionHandler.cs
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Exceptions_task7;
+
+
+
+
+namespace CourierManangementSystem_day10task_hexa.Exceptions_task7
+{
+    //exception task
+    public class ExceptionHandler
+    {
+    public static void SimulateTrackingError(string trackingNumber)
+            {
+                if (string.IsNullOrEmpty(trackingNumber) || trackingNumber != "ABC123")
+                {
+                    throw new TrackingNumberNotFoundException("Tracking number not found.");
+                }
+            }
+
+
+            public static void SimulateEmployeeIdCheck(int employeeId)
+            {
+                if (employeeId <= 0 || employeeId != 101)
+                {
+                    throw new InvalidEmployeeIdException("Employee ID is invalid or does not exist.");
+                }
+            }
+        }
+    }
+
+
+b.InvalidEmployeeIdException.cs
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Exceptions_task7;
+
+
+namespace CourierManangementSystem_day10task_hexa.Exceptions_task7
+{
+    //exception task
+    public class InvalidEmployeeIdException : Exception
+    {
+         public InvalidEmployeeIdException(string message) : base(message)
+            {
+            }
+        }
+    }
+
+
+C. TrackingNumberNotFoundException.cs
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Exceptions_task7;
+
+
+
+
+namespace CourierManangementSystem_day10task_hexa.Exceptions_task7
+{
+    //exception task
+     public class TrackingNumberNotFoundException : Exception
+    {
+   public TrackingNumberNotFoundException(string message) : base(message)
+            {
+            }
+        }
+    }
+
+
+—--------------------------------------------------------------------------------------------------------------
+
+
+3. Services folder
+
+
+1. CourierAdminService.cs
+
+
+          using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Entities;
+
+
+namespace CourierManangementSystem_day10task_hexa.Services
+{
+        public class CourierAdminService : ICourierAdminService 
+        {
+            private List<Employee> staffList = new List<Employee>(); 
+
+
+            public int AddCourierStaff(Employee employee)
+            {
+                if (employee == null)
+                {
+                    throw new ArgumentNullException(nameof(employee), "Employee object cannot be null.");
+                }
+
+
+                staffList.Add(employee);
+                return employee.EmployeeID; 
+            }
+
+
+            public bool RemoveCourierStaff(int employeeID)
+            {
+                return staffList.RemoveAll(e => e.EmployeeID == employeeID) > 0;
+            }
+
+
+            public List<Employee> GetAllCourierStaff()
+            {
+                return staffList;
+            }
+        }
+    }
+
+
+
+
+
+
+2. CourierAdminServiceCollectionImpl.cs
+
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Entities;
+using CourierManangementSystem_day10task_hexa.Services;
+
+
+namespace CourierManangementSystem_day10task_hexa.Services
+{
+    //to implement the collection task
+    public class CourierAdminServiceCollectionImpl : CourierUserServiceCollectionImpl, ICourierAdminService
+    {
+        public int AddCourierStaff(Employee employee)
+        {
+            employee.EmployeeID = new Random().Next(100, 999); 
+
+
+            companyObj.Employees.Add(employee);
+            return employee.EmployeeID;
+        }
+
+
+        public bool RemoveCourierStaff(int staffId)
+        {
+            Employee staff = companyObj.Employees.Find(e => e.EmployeeID == staffId);
+            if (staff != null)
+            {
+                companyObj.Employees.Remove(staff);
+                return true;
+            }
+            return false;
+        }
+
+
+        public List<Employee> GetAllCourierStaff()
+        {
+            return companyObj.Employees;
+        }
+    }
+}
+
+
+3. CourierAdminServiceImpl.cs
+
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Entities;
+using CourierManangementSystem_day10task_hexa.Services;
+
+
+namespace CourierManangementSystem_day10task_hexa.Services
+{
+           public class CourierAdminServiceImpl : CourierUserServiceImpl
+        {
+            public int AddCourierStaff(Employee employee)
+            {
+                companyObj.AddEmployee(employee);
+                return employee.EmployeeID;
+            }
+        }
+    }
+
+
+
+
+4. CourierUserService.cs
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Entities;
+
+
+namespace CourierManangementSystem_day10task_hexa.Services
+{
+        internal class CourierUserService : ICourierUserService
+        {
+            public string PlaceOrder(Courier courierObj)
+            {
+                
+                string trackingNumber = Guid.NewGuid().ToString().Substring(0, 8);
+                Console.WriteLine($"Order placed and the Tracking Number is: {trackingNumber}");
+                return trackingNumber;
+            }
+
+
+            public string GetOrderStatus(string trackingNumber)
+            {
+                return "In Transit"; 
+            }
+
+
+            public bool CancelOrder(string trackingNumber)
+            {
+                return true; 
+            }
+
+
+            public List<Courier> GetAssignedOrders(int courierStaffId)
+            {
+                return new List<Courier>(); 
+            }
+        }
+    }
+
+
+
+
+5. CourierUserServiceCollectionImpl.cs
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Entities;
+
+
+
+
+namespace CourierManangementSystem_day10task_hexa.Services
+{
+    public class CourierUserServiceCollectionImpl : ICourierUserService
+    {
+        protected CourierCompanyCollection companyObj = new CourierCompanyCollection();
+
+
+        public string PlaceOrder(Courier courier)
+        {
+            // to confirm that 8th task output is being excuted properly
+            Console.WriteLine(" Task 8: Placing order using CourierUserServiceCollectionImpl");
+            courier.TrackingNumber = "TRK" + new Random().Next(1000, 9999);
+            companyObj.Couriers.Add(courier);
+            return courier.TrackingNumber;
+        }
+
+
+        public string GetOrderStatus(string trackingNumber)
+        {
+            var courier = companyObj.Couriers.Find(c => c.TrackingNumber == trackingNumber);
+            return courier != null ? "In Transit" : "Not Found";
+        }
+
+
+        public bool CancelOrder(string trackingNumber)
+        {
+            var courier = companyObj.Couriers.Find(c => c.TrackingNumber == trackingNumber);
+            if (courier != null)
+            {
+                companyObj.Couriers.Remove(courier);
+                return true;
+            }
+            return false;
+        }
+
+
+        public List<Courier> GetAssignedOrders(int staffId)
+        {
+            return companyObj.Couriers.FindAll(c => c.AssignedEmployeeID == staffId);
+        }
+    }
+}
+
+
+6. CourierUserServiceImpl.cs
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Entities;
+using CourierManangementSystem_day10task_hexa.Services;
+
+
+namespace CourierManangementSystem_day10task_hexa.Services
+{
+  
+        public class CourierUserServiceImpl : ICourierUserService
+        {
+            protected CourierCompany companyObj = new CourierCompany();
+
+
+            public string PlaceOrder(Courier courier)
+            {
+                courier.TrackingNumber = "TRK" + new Random().Next(1000, 9999);
+                companyObj.AddCourier(courier);
+                return courier.TrackingNumber;
+            }
+
+
+            public string GetOrderStatus(string trackingNumber)
+            {
+                var courier = companyObj.FindCourier(trackingNumber);
+                return courier != null ? "In Transit" : "Not Found";
+            }
+
+
+            public bool CancelOrder(string trackingNumber)
+            {
+                return companyObj.RemoveCourier(trackingNumber);
+            }
+
+
+            public List<Courier> GetAssignedOrders(int staffId)
+            {
+                return companyObj.GetCouriersByStaff(staffId);
+            }
+        }
+    }
+
+
+
+
+7. ICourierAdminService.cs
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Entities;
+
+
+namespace CourierManangementSystem_day10task_hexa.Services
+{
+        public interface ICourierAdminService 
+        {
+            int AddCourierStaff(Employee employee);
+            bool RemoveCourierStaff(int employeeID);
+            List<Employee> GetAllCourierStaff();
+        }
+    }
+
+
+
+
+8. ICourierUserService.cs
+
+
+using System;
+using System.Collections.Generic;
+using CourierManangementSystem_day10task_hexa.Entities;
+
+
+namespace CourierManangementSystem_day10task_hexa.Services
+{
+    public interface ICourierUserService
+    {
+        string PlaceOrder(Courier courierObj);
+        string GetOrderStatus(string trackingNumber);
+        bool CancelOrder(string trackingNumber);
+        List<Courier> GetAssignedOrders(int courierStaffId);
+    }
+}
+
+
+—------------------------------------------------------------------------------------------------------------------------
+
+
+Task1to4:folder
+
+
+1.task1-controlflow: folder
+   
+1. CourierAssignment.cs
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task1_ControlFlow;
+
+
+namespace CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task1_ControlFlow
+{
+    internal class CourierAssignment
+        {
+            public static void AssignCourier(List<string> couriers, string newOrder)
+            {
+                foreach (var courier in couriers)
+                {
+                    Console.WriteLine($"Assigning order '{newOrder}' to courier: {courier}");
+                    return;
+                }
+                Console.WriteLine("No couriers available");
+            }
+        }
+    }
+
+
+2. OrderStatusChecker.cs
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task1_ControlFlow;
+
+
+namespace CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task1_ControlFlow
+{
+    internal class OrderStatusChecker
+    {
+        public class OrderStatus
+        {
+            public static void CheckOrderStatus(string status)
+            {
+                //mainly we should consider the 3 thing here 1.process, 2. deliver, 3. cancalled
+                if (status == "Processing")
+                    Console.WriteLine("Your order is being processed.");
+                else if (status == "Delivered")
+                    Console.WriteLine("Your order has been delivered.");
+                else if (status == "Cancelled")
+                    Console.WriteLine("Your order has been cancelled.");
+                else
+                    Console.WriteLine("Invalid status.");
+            }
+        }
+    }
+}
+
+
+
+
+3. ParcelWeightCategorize.cs
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task1_ControlFlow;
+
+
+namespace CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task1_ControlFlow
+
+
+// i have categorized Parcel Based on Weight so we can use switch-case 
+{
+    internal class ParcelWeightCategorize
+    {
+            public static void CategorizeParcel(double weight)
+            {
+                switch (weight)
+                {
+                    case < 5:
+                        Console.WriteLine("Category: Light Parcel");
+                        break;
+                    case < 20:
+                        Console.WriteLine("Category: Medium Parcel");
+                        break;
+                    default:
+                        Console.WriteLine("Category: Heavy Parcel");
+                        break;
+                }
+            }
+        }
+    }
+
+
+4. UserAuthentication.cs
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task1_ControlFlow;
+
+
+
+
+namespace CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task1_ControlFlow
+{
+    internal class UserAuthentication
+    {
+            private static Dictionary<string, string> users = new Dictionary<string, string>
+        {
+            { "admin", "admin123" },
+            { "customer1yamini", "passyamini123" },
+            { "employee1Nirosha", "empnirosha456" }
+        };
+
+
+            public static bool Login(string username, string password)
+            {
+                if (users.ContainsKey(username) && users[username] == password)
+                {
+                    Console.WriteLine("Login successful");
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid username or password.");
+                    return false;
+                }
+            }
+        }
+    }
+
+
+2. Task2-loops 
+
+
+1. OrderDisplayLoop.cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task2_loops;
+
+
+namespace CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task2_loops
+    
+{
+    internal class OrderDisplayLoop
+    {
+        public static void ShowOrders(List<string> orders)
+            {
+                if (orders.Count == 0)
+                {
+                    Console.WriteLine("No orders to display.");
+                    return;
+                }
+
+
+                Console.WriteLine("List of Orders:");
+                for (int i = 0; i < orders.Count; i++) 
+                {
+                    Console.WriteLine($"{i + 1}. {orders[i]}");
+                }
+            }
+        }
+    }
+
+
+
+
+2. RealtimeForTracking.cs
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task2_loops;
+
+
+namespace CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task2_loops
+{
+    internal class RealtimeForTracking
+    {
+            public static void TrackParcel()
+            {
+                string[] trackingStatus = { "Dispatched", "In Transit", "Arrived at Hub", "Out for Delivery", "Delivered" };
+                int index = 0;
+
+
+                Console.WriteLine("Tracking Parcel Progress...");
+                while (index < trackingStatus.Length) // Using a while loop
+                {
+                    Console.WriteLine($"Status: {trackingStatus[index]}");
+                    index++;
+               
+                    System.Threading.Thread.Sleep(1000); 
+                }
+
+
+                Console.WriteLine("Your parcel has been successfully delivered");
+            }
+        }
+    }
+
+
+3. Task3 about arrays and ds
+
+
+1. NearestCourierFinder.cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task3_all_about_arrays_and_ds;
+
+
+namespace CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task3_all_about_arrays_and_ds
+{
+    internal class NearestCourierFinder
+    {
+            public static void FindNearestCourier()
+            {
+                string[] couriers = { "Courier A (2 km)", "Courier B (5 km)", "Courier C (3 km)", "Courier D (7 km)" };
+                int[] distances = { 2, 5, 3, 7 }; 
+
+
+                int minIndex = 0;
+            // to find the courier with the least distance
+                for (int i = 1; i < distances.Length; i++) 
+                {
+                    if (distances[i] < distances[minIndex])
+                    {
+                        minIndex = i;
+                    }
+                }
+
+
+                Console.WriteLine($"\nNearest Available Courier: {couriers[minIndex]}");
+            }
+        }
+    }
+
+
+2. ParcelTrackingHistory.cs
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task3_all_about_arrays_and_ds;
+
+
+namespace CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task3_all_about_arrays_and_ds
+{
+    internal class ParcelTrackingHistory
+        {
+            public static void ShowTrackingHistory()
+            {
+                string[] history = {
+                "Dispatched ",
+                "Arrived ",
+                "Out for Delivery",
+                "Delivered to Customer"
+            };
+
+
+                Console.WriteLine("\nTracking History of the Parcel:");
+            // array concept is implemented to store the tracking details
+                for (int i = 0; i < history.Length; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {history[i]}");
+                }
+            }
+        }
+    }
+
+
+4. Task4 - strings and functions
+
+
+1. AddressFormatting.cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task4_here_all_about_Strings_and_functions;
+
+
+namespace CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task4_here_all_about_Strings_and_functions
+{
+    internal class AddressFormatting
+    {
+        public static string Format(string input)
+        {
+            // Splitting the input based on commas
+            string[] parts = input.Split(',');
+
+
+            // Checking if the input has at least 4 parts (Street, City, State, Zip)
+            if (parts.Length < 4)
+            {
+                return "Invalid address format. Please enter in 'Street, City, State, Zip' format.";
+            }
+
+
+            // Trim extra spaces and format correctly
+            string street = parts[0].Trim();
+            string city = parts[1].Trim();
+            string state = parts[2].Trim();
+            string zip = parts[3].Trim();
+
+
+            return $"{street}, {city}, {state} - {zip}".ToUpper();
+        }
+    }
+}
+
+
+2. CustomerValidation.cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task4_here_all_about_Strings_and_functions;
+
+
+namespace CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task4_here_all_about_Strings_and_functions
+{
+    internal class CustomerValidation
+    {
+        
+        
+            public static bool IsValidPhoneNumber(string phone)
+            {
+                return Regex.IsMatch(phone, @"^\d{10}$");
+            }
+
+
+            public static bool IsValidName(string name)
+            {
+                return !string.IsNullOrWhiteSpace(name) && name.Length >= 2;
+            }
+
+
+            public static bool IsValidAddress(string address)
+            {
+                return !string.IsNullOrWhiteSpace(address) && address.Length > 5;
+            }
+
+
+            public static bool Validate(string name, string address, string phone)
+            {
+                return IsValidName(name) && IsValidAddress(address) && IsValidPhoneNumber(phone);
+            }
+        }
+    }
+3.  FindSimilarAddress.cs
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task4_here_all_about_Strings_and_functions;
+
+
+namespace CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task4_here_all_about_Strings_and_functions
+{
+    internal class FindSimilarAddress
+    {
+            public static bool AreAddressesSimilar(string addr1, string addr2)
+            {
+                return addr1.Trim().ToLower().Equals(addr2.Trim().ToLower());
+            }
+        }
+    }
+
+
+4. OrderConfirmation.cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task4_here_all_about_Strings_and_functions;
+
+
+namespace CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task4_here_all_about_Strings_and_functions
+{
+
+
+    internal class OrderConfirmation
+    {
+       
+            private static Dictionary<int, string> orders = new Dictionary<int, string>();
+
+
+            public static void AddOrder(int orderId, string details)
+            {
+                orders[orderId] = details;
+                Console.WriteLine($"Order {orderId} added.");
+            }
+
+
+            public static void GetOrder(int orderId)
+            {
+                if (orders.ContainsKey(orderId))
+                    Console.WriteLine($"Order {orderId}: {orders[orderId]}");
+                else
+                    Console.WriteLine($"Order {orderId} not found.");
+            }
+            public static void GenerateEmail()
+            {
+                Console.WriteLine("\nGenerating order confirmation email...");
+                Console.WriteLine("Subject: Order Confirmation");
+                Console.WriteLine("Dear Customer,");
+                Console.WriteLine("Thank you for your order... Your order has been successfully placed.");
+                Console.WriteLine("We will notify you once your package is shipped.");
+                Console.WriteLine("Always welcome,\nCourier Management System");
+            }
+        }
+    }
+
+
+
+
+5. ParcelTrackingSimulation.cs
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task4_here_all_about_Strings_and_functions;
+
+
+namespace CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task4_here_all_about_Strings_and_functions
+{
+    internal class ParcelTrackingSimulation
+    {
+            public static string GenerateTrackingID(string sender, string receiver)
+            {
+                if (sender.Length < 2 || receiver.Length < 2)
+                    return "Invalid Names for Tracking ID";
+
+
+                string senderPart = sender.Substring(0, 2).ToUpper();
+                string receiverPart = receiver.Substring(0, 2).ToUpper();
+                string timePart = DateTime.Now.ToString("MMddHHmmss");
+
+
+                return $"{senderPart}{receiverPart}{timePart}";
+            }
+        }
+    }
+
+
+6. PasswordGenerator.cs
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task4_here_all_about_Strings_and_functions;
+
+
+namespace CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task4_here_all_about_Strings_and_functions
+{
+    internal class PasswordGenerator
+    {
+         public static string GeneratePassword(int length)
+            {
+                string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                StringBuilder password = new StringBuilder();
+                Random random = new Random();
+
+
+                for (int i = 0; i < length; i++)
+                    password.Append(chars[random.Next(chars.Length)]);
+
+
+                return password.ToString();
+            }
+        }
+    }
+
+
+
+
+7. ShippingCostCalculator.cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task4_here_all_about_Strings_and_functions;
+
+
+namespace CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task4_here_all_about_Strings_and_functions
+{
+    internal class ShippingCostCalculator
+    {
+            public static double CalculateCost(double weight, string destination)
+            {
+                double baseRate = 5.0;
+                double weightCharge = weight * 2.0; 
+                double locationCharge = (destination == "International") ? 20.0 : 5.0;
+            
+                return baseRate + weightCharge + locationCharge;
+            }
+        }
+    }
+—------------------------------------------------------------------------------------------------------------------------Main Program.cs
+using System;
+using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
+using CourierManangementSystem_day10task_hexa.Entities;
+using CourierManangementSystem_day10task_hexa.Exceptions_task7;
+using CourierManangementSystem_day10task_hexa.Services;
+using CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task1_ControlFlow;
+using CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task3_all_about_arrays_and_ds;
+using CourierManangementSystem_day10task_hexa.Tasks_one_four_.Task4_here_all_about_Strings_and_functions;
+
+
+
+
+namespace CourierManangementSystem_day10task_hexa
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            //8th (task) to excute that collection task
+            ICourierUserService userService = new CourierUserServiceCollectionImpl();
+            ICourierAdminService adminService = new CourierAdminServiceCollectionImpl();
+
+
+            while (true)
+                {
+                   
+                    Console.WriteLine("welcome you all for courier management system");
+                    Console.WriteLine("1. Place Order");
+                    Console.WriteLine("2. Get Order Status");
+                    Console.WriteLine("3. Cancel Order");
+                    Console.WriteLine("4. View Assigned Orders");
+                    Console.WriteLine("5. Add Courier Staff");
+                    Console.WriteLine("6. Assign Couriers to Shipping");
+                    Console.WriteLine("7. Parcel Tracking");
+                    Console.WriteLine("8. Validate Customer Data");
+                    Console.WriteLine("9. Format Address");
+                    Console.WriteLine("10. Generate Order Confirmation Email");
+                    Console.WriteLine("11. Calculate Shipping Cost");
+                    Console.WriteLine("12. Generate Secure Password");
+                    Console.WriteLine("13. Find Similar Addresses");
+                    Console.WriteLine("14. Exit");
+                   Console.WriteLine("15. Simulate Error Scenarios");
+                    Console.Write("Enter your choice: ");
+
+
+                    string choice = Console.ReadLine();
+                    switch (choice)
+                    {
+                        case "1":
+                          PlaceOrder(userService);
+
+
+                            break;
+                        case "2":
+                            GetOrderStatus(userService);
+                            break;
+                        case "3":
+                            CancelOrder(userService);
+                            break;
+                        case "4":
+                            GetAssignedOrders(userService);
+                            break;
+                        case "5":
+                            AddCourierStaff(adminService);
+                            break;
+                        case "6":
+                            AssignCouriersToShipments();
+                            break;
+                        case "7":
+                            ParcelTracking();
+                            break;
+                        case "8":
+                            ValidateCustomerData();
+                            break;
+                        case "9":
+                            FormatAddress();
+                            break;
+                        case "10":
+                            GenerateOrderConfirmation();
+                            break;
+                        case "11":
+                            CalculateShippingCost();
+                            break;
+                        case "12":
+                            GenerateSecurePassword();
+                            break;
+                        case "13":
+                            FindSimilarAddresses();
+                            break;
+                        case "14":
+                            Console.WriteLine("you can exit.. Thank you");
+                            return;
+
+
+                        case "15":
+                        SimulateErrorScenarios();
+                        break;
+
+
+                    default:
+                            Console.WriteLine("Invalid choice.. can youPlease try again.");
+                            break;
+                    }
+
+
+                    Console.WriteLine("\n you can Press Enter to continue...");
+                    Console.ReadLine();
+                }
+            }
+
+
+            static void PlaceOrder(ICourierUserService userService)
+            {
+                Console.Write("Enter sender name: ");
+                string senderName = Console.ReadLine();
+                Console.Write("Enter sender address: ");
+                string senderAddress = Console.ReadLine();
+                Console.Write("Enter receiver name: ");
+                string receiverName = Console.ReadLine();
+                Console.Write("Enter receiver address: ");
+                string receiverAddress = Console.ReadLine();
+                Console.Write("Enter weight of the package: ");
+                double weight = Convert.ToDouble(Console.ReadLine());
+
+
+            Courier courier = new Courier(0, senderName, senderAddress, receiverName, receiverAddress, weight, "", DateTime.Now, 1);
+
+
+
+
+            string trackingNumber = userService.PlaceOrder(courier);
+                Console.WriteLine($"Order placed successfully! Tracking Number: {trackingNumber}");
+            }
+
+
+            static void GetOrderStatus(ICourierUserService userService)
+            {
+                Console.Write("Enter tracking number: ");
+                string trackingNumber = Console.ReadLine();
+                string status = userService.GetOrderStatus(trackingNumber);
+                Console.WriteLine($"Order Status: {status}");
+            }
+
+
+            static void CancelOrder(ICourierUserService userService)
+            {
+                Console.Write("Enter tracking number to cancel: ");
+                string trackingNumber = Console.ReadLine();
+                bool isCancelled = userService.CancelOrder(trackingNumber);
+                Console.WriteLine(isCancelled ? "Order successfully canceled!" : "Order cancellation failed.");
+            }
+
+
+            static void GetAssignedOrders(ICourierUserService userService)
+            {
+                Console.Write("Enter courier staff ID: ");
+                int staffId = Convert.ToInt32(Console.ReadLine());
+                List<Courier> orders = userService.GetAssignedOrders(staffId);
+                foreach (var order in orders)
+                {
+                    Console.WriteLine(order);
+                }
+            }
+
+
+            static void AddCourierStaff(ICourierAdminService adminService)
+            {
+                Console.Write("Enter staff name: ");
+                string name = Console.ReadLine();
+                Console.Write("Enter contact number: ");
+                string contactNumber = Console.ReadLine();
+            Employee newStaff = new Employee(name, contactNumber);
+            int staffId = adminService.AddCourierStaff(newStaff);
+                Console.WriteLine($"New Staff Added! Staff ID: {staffId}");
+            }
+
+
+        static void AssignCouriersToShipments()
+        {
+            List<string> availableCouriers = new List<string> { "Courier1", "Courier2", "Courier3" };
+            string newOrder = "Order123";
+
+
+            CourierAssignment.AssignCourier(availableCouriers, newOrder);
+        }
+
+
+
+
+
+
+        static void ParcelTracking()
+        {
+            ParcelTrackingHistory.ShowTrackingHistory();
+        }
+
+
+
+
+        static void ValidateCustomerData()
+            {
+                Console.Write("Enter name: ");
+                string name = Console.ReadLine();
+                Console.Write("Enter address: ");
+                string address = Console.ReadLine();
+                Console.Write("Enter phone number: ");
+                string phone = Console.ReadLine();
+                bool isValid = CustomerValidation.Validate(name, address, phone);
+                Console.WriteLine(isValid ? "Valid data!" : "Invalid data!");
+            }
+
+
+            static void FormatAddress()
+            {
+                Console.Write("Enter Address (Street, City, State, Zip): ");
+                string input = Console.ReadLine();
+                string formattedAddress = AddressFormatting.Format(input);
+                Console.WriteLine($"Formatted Address: {formattedAddress}");
+            }
+
+
+            static void GenerateOrderConfirmation()
+            {
+                OrderConfirmation.GenerateEmail();
+            }
+
+
+        static void CalculateShippingCost()
+        {
+            Console.Write("Enter package weight (kg): ");
+            double weight = Convert.ToDouble(Console.ReadLine());
+
+
+            Console.Write("Enter destination (Domestic/International): ");
+            string destination = Console.ReadLine();
+
+
+            double cost = ShippingCostCalculator.CalculateCost(weight, destination);
+            Console.WriteLine($"Shipping Cost: ${cost}");
+        }
+
+
+
+
+        static void GenerateSecurePassword()
+            {
+            string password = PasswordGenerator.GeneratePassword(10); 
+            Console.WriteLine($"Generated Secure Password: {password}");
+            }
+
+
+        static void FindSimilarAddresses()
+        {
+            Console.Write("Enter first address: ");
+            string addr1 = Console.ReadLine();
+            Console.Write("Enter second address: ");
+            string addr2 = Console.ReadLine();
+
+
+            bool isSimilar = FindSimilarAddress.AreAddressesSimilar(addr1, addr2);
+            Console.WriteLine(isSimilar ? "Addresses are similar!" : "Addresses are different.");
+        }
+
+
+        static void SimulateErrorScenarios()
+        {
+            try
+            {
+                Console.WriteLine("Enter tracking number:");
+                string tracking = Console.ReadLine();
+                ExceptionHandler.SimulateTrackingError(tracking);
+            }
+            catch (TrackingNumberNotFoundException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+
+
+            try
+            {
+                Console.WriteLine("Enter employee ID:");
+                int id = int.Parse(Console.ReadLine());
+                ExceptionHandler.SimulateEmployeeIdCheck(id);
+            }
+            catch (InvalidEmployeeIdException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                Console.WriteLine("Exception handling completed.");
+            }
+        }
+
+
+    }
+}
